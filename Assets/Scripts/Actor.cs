@@ -5,7 +5,7 @@ using UnityEngine.Animations;
 
 [RequireComponent(typeof(Animator))]
 public abstract class Actor : MonoBehaviour {
-    //ネットから拾ってきた書き方(アニメーションのハッシュ値を登録しておくらしい)
+    //ネットから拾ってきた書き方(アニメーションのハッシュ値を登録しておくらしい)(ハッシュ値て何？）
     public readonly int hashAttack = Animator.StringToHash("Attack");
 
 
@@ -23,6 +23,9 @@ public abstract class Actor : MonoBehaviour {
         Gu,
         Choki,
         Par,
+        Special,
+        Item,
+
         Unknown,
         Error,
     }
@@ -47,5 +50,6 @@ public abstract class Actor : MonoBehaviour {
 
     //この中でm_handを決定してm_stateをFINISH_DECIDEにする。
     public abstract void DecideHand();
+
 
 }

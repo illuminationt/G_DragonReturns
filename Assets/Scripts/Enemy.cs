@@ -16,4 +16,11 @@ public class Enemy : Actor
         Action = Actions.Gu;
         State = HandState.FINISH_DECIDE;
     }
+
+    //対戦相手を引数に入れて必殺技をドーン
+    public virtual void Special(ref Dragon dragon)
+    {
+        //仮
+        dragon.HP -= 50;
+    }
 }

@@ -120,6 +120,7 @@ public partial class BattleManager : MonoBehaviour
                         case Actor.Actions.Gu:   ; break;
                         case Actor.Actions.Choki:dragon.IsWinner = true; enemy.HP -= dragon.AttackGu; break;
                         case Actor.Actions.Par:  enemy.IsWinner = true; dragon.HP -= enemy.AttackPar; break;
+                        case Actor.Actions.Special:enemy.IsWinner = true;break;
                         default: Debug.LogError("やばい"); break;
                     }
                     break;
