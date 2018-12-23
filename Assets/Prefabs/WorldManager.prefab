@@ -11,6 +11,22 @@ Prefab:
   m_SourcePrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1987372459174000}
   m_IsPrefabAsset: 1
+--- !u!1 &1919444616219720
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4961771870223162}
+  - component: {fileID: 114911864811451522}
+  m_Layer: 0
+  m_Name: MapGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1987372459174000
 GameObject:
   m_ObjectHideFlags: 0
@@ -36,8 +52,22 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4961771870223162}
   m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4961771870223162
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1919444616219720}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4635459724123024}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114511717963751172
@@ -51,4 +81,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf53386a49e240d79099c4c5f9bb3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_BattleSceneName: Title
+  m_mapGenerator: {fileID: 114911864811451522}
+  m_BattleSceneName: Battle
+  m_TitleSceneName: Title
+--- !u!114 &114911864811451522
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1919444616219720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3fcdeda26ccd1649b5dbb5092ff3511, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_mapData:
+  - {fileID: 4900000, guid: 0f3194f73718e844aad52e0d63ded2c7, type: 3}
+  m_dragonWorld: {fileID: 1185855066073524, guid: 9f564436b13da684da28b2eaaee6e362,
+    type: 2}
+  m_enemiesWorld:
+  - {fileID: 1024423310851556, guid: 576a6ce9ff9777c4ca2f92aeeb324a5f, type: 2}
+  m_bossesWorld:
+  - {fileID: 1945310741520362, guid: ae7b8d5934af0a34bb60238a88efccfa, type: 2}
+  m_dragonInitPos:
+  - {x: 0, y: 0}
