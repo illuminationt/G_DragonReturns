@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneSequencer : MonoBehaviour
-{
+public class SceneSequencer : MonoBehaviour { 
 
     private FadePanel fadePanel;
     private bool isChangeScene = false;
     private string nextSceneName;
+
+
 
     // Use this for initialization
     void Start()
@@ -23,6 +24,7 @@ public class SceneSequencer : MonoBehaviour
         if (isChangeScene && !fadePanel.IsFadeOut)
         {
             SceneManager.LoadScene(nextSceneName);
+            fadePanel.IsFadeIn = true;
         }
     }
 

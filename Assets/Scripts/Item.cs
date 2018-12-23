@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item {
+public class Item:MonoBehaviour {
 
-    //public void Use(ref )
+    public Vector3 GridPosition;
+    
 }

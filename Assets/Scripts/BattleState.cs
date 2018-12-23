@@ -11,7 +11,11 @@ public partial class BattleManager : MonoBehaviour
     //バトル始まる前？一応用意した。使わないかも。
     public class StateBeforeBattle : BattleState
     {
-        public override BattleState Execute(Dragon dragon, Enemy enemy)
+        public override void Enter(Dragon dragon, Enemy enemy, BattleMenu menu)
+        {
+
+        }
+        public override BattleState Execute(Dragon dragon, Enemy enemy,BattleMenu menu)
         {
             BattleState next = this;
 
@@ -25,17 +29,46 @@ public partial class BattleManager : MonoBehaviour
         }
     }
 
+    public class StateAttackOrItem : BattleState
+    {
+        public override void Enter(Dragon dragon, Enemy enemy, BattleMenu menu)
+        {
+            menu.m_firstMenu.SetActive(true);
+        }
+        public override BattleState Execute(Dragon dragon, Enemy enemy,BattleMenu menu)
+        {
+            BattleState next = this;
+            bool end=menu.CtrlFirstMenu();
+
+            if (end)
+            {
+                switch (menu.IconFirstPos)
+                {
+                    case 0:
+                        next = new StateDecideHand();
+                        break;
+                    case 1:
+                        next = new StateOpenInventory();
+                        break;
+                    default:
+                        Debug.LogError("error");
+                        break;
+                }
+            }
+
+            return next;
+        }
+    }
+
     //プレイヤーがジャンケンの手を考えている状態。
     public class StateDecideHand : BattleState
     {
-
-
-        public override void Enter(Dragon dragon, Enemy enemy)
+        public override void Enter(Dragon dragon, Enemy enemy, BattleMenu menu)
         {
             Debug.Log("手を決めてください...G or C or P");
         }
 
-        public override BattleState Execute(Dragon dragon, Enemy enemy)
+        public override BattleState Execute(Dragon dragon, Enemy enemy, BattleMenu menu)
         {
             BattleState next = this;
 
@@ -58,10 +91,9 @@ public partial class BattleManager : MonoBehaviour
 
         //両者の手が出し終わった。まず勝者の判別
         //死んでるかとかのチェックはアニメーションが終わってから。
-        public override void Exit(Dragon dragon, Enemy enemy)
+        public override void Exit(Dragon dragon, Enemy enemy,BattleMenu menu)
         {
-            CalculateDamage(ref dragon, ref enemy);
-            Debug.Log("Dragon : " + dragon.Action + " Enemy : " + enemy.Action);
+           
         }
 
 
@@ -107,57 +139,37 @@ public partial class BattleManager : MonoBehaviour
             }
             */
 
-        //この中でダメーCジを計算してしまう
-        private void CalculateDamage(ref Dragon dragon, ref Enemy enemy)
-        {
-            dragon.IsWinner = enemy.IsWinner = false;
-            //ジャンケンの勝者判別
-            switch (dragon.Action)
-            {
-                case Actor.Actions.Gu:
-                    switch (enemy.Action)
-                    {
-                        case Actor.Actions.Gu:   ; break;
-                        case Actor.Actions.Choki:dragon.IsWinner = true; enemy.HP -= dragon.AttackGu; break;
-                        case Actor.Actions.Par:  enemy.IsWinner = true; dragon.HP -= enemy.AttackPar; break;
-                        case Actor.Actions.Special:enemy.IsWinner = true;break;
-                        default: Debug.LogError("やばい"); break;
-                    }
-                    break;
-                case Actor.Actions.Choki:
-                    switch (enemy.Action)
-                    {
-                        case Actor.Actions.Gu:   enemy.IsWinner = true; dragon.HP -= enemy.AttackGu; break;
-                        case Actor.Actions.Choki: break;
-                        case Actor.Actions.Par:  dragon.IsWinner = true; enemy.HP -= dragon.AttackChoki; break;
-                        default: Debug.LogError("やばい"); break;
-                    }
-                    break;
-                case Actor.Actions.Par:
-                    switch (enemy.Action)
-                    {
-                        case Actor.Actions.Gu:   dragon.IsWinner = true; enemy.HP -= dragon.AttackPar; break;
-                        case Actor.Actions.Choki:enemy.IsWinner = true; dragon.HP -= enemy.AttackChoki; break;
-                        case Actor.Actions.Par:  break;
-                        default: Debug.LogError("やばい"); break;
-                    }
-                    break;
-                default:
-                    Debug.LogError("変な手が代入されているよ");
-                    break;
-            }
-
-        }
 
     }
 
+    public class StateOpenInventory : BattleState
+    {
+        public override void Enter(Dragon dragon, Enemy enemy, BattleMenu menu)
+        {
+            Inventory.Instance.Open();
+        }
 
+        public override BattleState Execute(Dragon dragon, Enemy enemy, BattleMenu menu)
+        {
+            BattleState next = this;
+
+            Inventory.Instance.ChooseItem();
+
+
+
+
+            return next;
+        }
+    }
 
     public class StateAction : BattleState
     {
 
-        public override void Enter(Dragon dragon, Enemy enemy)
+        public override void Enter(Dragon dragon, Enemy enemy, BattleMenu menu)
         {
+            CalculateDamage(ref dragon, ref enemy);
+            Debug.Log("Dragon : " + dragon.Action + " Enemy : " + enemy.Action);
+
             //アニメーション再生！
             Debug.Log("Enter Animation");
             Actor winner = getWinner(dragon, enemy);
@@ -168,7 +180,7 @@ public partial class BattleManager : MonoBehaviour
 
         }
 
-        public override BattleState Execute(Dragon dragon, Enemy enemy)
+        public override BattleState Execute(Dragon dragon, Enemy enemy, BattleMenu menu)
         {
             BattleState next = this;
 
@@ -200,36 +212,79 @@ public partial class BattleManager : MonoBehaviour
         }
 
         //アニメーションが終わったら体力を見て死んでたらリザルトへGO
-        public override void Exit(Dragon dragon, Enemy enemy)
+        public override void Exit(Dragon dragon, Enemy enemy, BattleMenu menu)
         {
 
         }
 
+        //この中でダメーCジを計算してしまう
+        private void CalculateDamage(ref Dragon dragon, ref Enemy enemy)
+        {
+            dragon.IsWinner = enemy.IsWinner = false;
+            //ジャンケンの勝者判別
+            switch (dragon.Action)
+            {
+                case Actor.Actions.Gu:
+                    switch (enemy.Action)
+                    {
+                        case Actor.Actions.Gu:; break;
+                        case Actor.Actions.Choki: dragon.IsWinner = true; enemy.HP -= dragon.AttackGu; break;
+                        case Actor.Actions.Par: enemy.IsWinner = true; dragon.HP -= enemy.AttackPar; break;
+                        default: Debug.LogError("やばい"); break;
+                    }
+                    break;
+                case Actor.Actions.Choki:
+                    switch (enemy.Action)
+                    {
+                        case Actor.Actions.Gu: enemy.IsWinner = true; dragon.HP -= enemy.AttackGu; break;
+                        case Actor.Actions.Choki: break;
+                        case Actor.Actions.Par: dragon.IsWinner = true; enemy.HP -= dragon.AttackChoki; break;
+                        default: Debug.LogError("やばい"); break;
+                    }
+                    break;
+                case Actor.Actions.Par:
+                    switch (enemy.Action)
+                    {
+                        case Actor.Actions.Gu: dragon.IsWinner = true; enemy.HP -= dragon.AttackPar; break;
+                        case Actor.Actions.Choki: enemy.IsWinner = true; dragon.HP -= enemy.AttackChoki; break;
+                        case Actor.Actions.Par: break;
+                        default: Debug.LogError("やばい"); break;
+                    }
+                    break;
+                default:
+                    Debug.LogError("変な手が代入されているよ");
+                    break;
+            }
 
+        }
 
     }
 
     public class StateResult : BattleState
     {
-        public override void Enter(Dragon dragon, Enemy enemy)
+        public override void Enter(Dragon dragon, Enemy enemy, BattleMenu menu)
         {
             Actor winner = getWinner(dragon,enemy);
             Debug.Log(winner.name + " win");
         }
 
-        public override BattleState Execute(Dragon dragon, Enemy enemy)
+        public override BattleState Execute(Dragon dragon, Enemy enemy, BattleMenu menu)
         {
             BattleState next = this;
 
-
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                //シーン遷移
+                GameObject.Find("SceneSequencer").GetComponent<SceneSequencer>().ChangeScene("World");
+            }
 
 
             return next;
         }
 
-        public override void Exit(Dragon dragon, Enemy enemy)
+        public override void Exit(Dragon dragon, Enemy enemy, BattleMenu menu)
         {
-
+            
         }
     }
 

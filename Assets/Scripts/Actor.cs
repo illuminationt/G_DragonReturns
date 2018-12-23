@@ -23,7 +23,6 @@ public abstract class Actor : MonoBehaviour {
         Gu,
         Choki,
         Par,
-        Special,
         Item,
 
         Unknown,

@@ -11,7 +11,7 @@ public class MapGenerator : MonoBehaviour {
     [SerializeField] private GameObject m_dragonWorld;
     [SerializeField] private GameObject[] m_enemiesWorld;
     [SerializeField] private GameObject[] m_bossesWorld;
-    //ｱｲﾃﾑ
+    [SerializeField] private GameObject[] m_item;
 
     //ドラゴンの初期位置はここで調整してください
     //後でCSVファイルの中に入れるかも
@@ -19,9 +19,10 @@ public class MapGenerator : MonoBehaviour {
 
     [NonSerialized]public DragonWorld Dragon = null;
     [NonSerialized] public List<EnemyWorld> EnemyList = new List<EnemyWorld>();
+    [NonSerialized] public List<Item> DropItemList = new List<Item>();
     [NonSerialized] public Vector3 MapSize = Vector3.zero;
 
-    //ちょっとおいとく（使っていない)
+    //
     public void MakeMap(int mapID)
     {
         StringReader stringReader = new StringReader(m_mapData[mapID].text);
@@ -42,9 +43,22 @@ public class MapGenerator : MonoBehaviour {
                 if (gridObj != null)
                 {
                     EnemyWorld e = gridObj.GetComponent<EnemyWorld>();
-                    e.GridPosition = new Vector3(x, 0, z);
-                    e.SetPosition();
-                    EnemyList.Add(e);
+                    if (e != null)
+                    {
+                        e.GridPosition = new Vector3(x, 0, z);
+                        e.SetPosition();
+                        EnemyList.Add(e);
+                    }
+                    
+                    Item item = gridObj.GetComponent<Item>();
+                    if (item != null)
+                    {
+                        item.GridPosition = new Vector3(x, 0, z);
+                        item.transform.position = item.GridPosition;
+                        DropItemList.Add(item);
+                    }
+                    
+
                 }
                 z++;
             }
@@ -70,6 +84,7 @@ public class MapGenerator : MonoBehaviour {
             case "0":break;
             case "e0":obj = m_enemiesWorld[0];break;
             case "b0":obj = m_bossesWorld[0];break;
+            case "i0":obj = m_item[0];break;
             default:
                 Debug.LogError("Excelファイルに変な値が書き込まれています");
                 break;
